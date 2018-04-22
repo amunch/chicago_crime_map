@@ -33,17 +33,20 @@ def outputTweet(coor,timestamp):
     csvfile = open(filename, 'r+b')
     csv_reader = csv.reader(csvfile)
     csvfile.seek(0)
+    oklines = []
     for row in csv_reader:
         dt = datetime.strptime(row[3], "%a %b %d %H:%M:%S +0000 %Y")
         currenttime = datetime.now() - timedelta(hours=1) # time from hour ago
         if dt >= currenttime: # too old
-            csvfile.write(row)
+            oklines.append(row)
     csvfile.truncate()
     csvfile.close()
     #
-    csvf = open(filename, 'w')
+    csvf = open(filename, 'w')     
     writer = csv.writer(csvf)
     print([coor[0], coor[1], timestamp])
+    for row in oklines:
+        writer.writerow([row])
     writer.writerow([str(coor[0]),str(coor[1]),timestamp])
     print("yoooo")
     csvf.close()
