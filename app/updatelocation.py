@@ -29,7 +29,7 @@ def further_classify(timestamp,coor,t_id,iscrime):
 
 def outputTweet(coor,timestamp):
     filename = sys.argv[1]
-    csvfile = open(filename, 'r+b')
+    csvfile = open(filename, 'w+b')
     csv_reader = csv.reader(csvfile)
     csvfile.seek(0)
     for row in csv_reader:
@@ -38,7 +38,7 @@ def outputTweet(coor,timestamp):
         if dt >= currenttime: # too old
             csvfile.write(row)
     writer = csv.writer(csvfile)
-    writer.writerow([coors[0],coors[1],timestamp])
+    writer.writerow([coor[0],coor[1],timestamp])
     print("yoooo")
     csvfile.truncate()
     csvfile.close()
@@ -56,6 +56,5 @@ if __name__ == "__main__":
     auth.set_access_token(ACCESS_TOKEN, ACCESS_SECRET)
     api = tweepy.API(auth)
     stream_listener = listener()
-    while(run_loop):
-        stream = tweepy.Stream(auth=api.auth, listener=stream_listener)
-        stream.filter(locations=[-87.7219,41.7806,-87.6187,41.9130],async=True)
+    stream = tweepy.Stream(auth=api.auth, listener=stream_listener)
+    stream.filter(locations=[-87.7219,41.7806,-87.6187,41.9130],async=True)
