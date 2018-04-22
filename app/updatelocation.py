@@ -8,10 +8,11 @@ class listener(tweepy.StreamListener):
         text = status.text.encode('utf-8')
         timestamp = str(status.created_at)
         coor = status.geo
+        print(coor)
         t_id = str(status.id)
         print("hi")
         if coor != None:
-            classify(text,timestamp,coor,t_id)
+            classify(text,timestamp,coor['coordinates'],t_id)
         return True
 
     def on_error(self, status):
@@ -40,9 +41,10 @@ def outputTweet(coor,timestamp):
     csvfile.truncate()
     csvfile.close()
     #
-    csvf = open(filename, 'wb')
+    csvf = open(filename, 'w')
     writer = csv.writer(csvf)
-    writer.writerow([coor[0],coor[1],timestamp])
+    print([coor[0], coor[1], timestamp])
+    writer.writerow([str(coor[0]),str(coor[1]),timestamp])
     print("yoooo")
     csvf.close()
 
