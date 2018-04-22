@@ -2,7 +2,9 @@ import csv
 from datetime import datetime
 from math import sin, cos, sqrt, atan2, radians
 
-tweet_txt = open('../data/crime_text.txt', 'wb')
+crime_tweets = set()
+all_tweets = set()
+tweet_dict = {}
 
 def find_centroid(geo):
     fixed = geo.replace(' ','').split(',')
@@ -40,7 +42,8 @@ def find_tweets(dt, geo, tweets):
         diff = abs((dt - i[2]).total_seconds())
         if diff < 3600:
             if geo_distance(geo, i[1]) < 5:
-                tweet_txt.write(i[0] + '\n')
+                crime_tweets.add(i[3])
+                #tweet_txt.write(i[0] + '\n')
                 
 
 tweets = []
@@ -49,7 +52,9 @@ with open('../data/chicago_geo.csv', 'rb') as csvfile:
     for row in csv_reader:
         geo = (row[1], row[2])
         dt = datetime.strptime(row[3], "%a %b %d %H:%M:%S +0000 %Y")
-        tweets.append([row[0], tuple(geo), dt])
+        all_tweets.add(row[4])
+        tweet_dict[row[4]] = row[0]
+        tweets.append([row[0], tuple(geo), dt, row[4]])
 
 with open('../data/crimes.csv', 'rb') as csvfile:
     csv_reader = csv.reader(csvfile)
@@ -60,3 +65,10 @@ with open('../data/crimes.csv', 'rb') as csvfile:
         dt = datetime.strptime(row[1], "%m/%d/%Y %I:%M:%S %p")
         if row[16] != '':
             find_tweets(dt, row[16], tweets)
+
+tweet_txt = open('../data/crime_text.txt', 'wb')
+for i in crime_tweets:
+    tweet_txt.write(tweet_dict[i] + '\n')
+tweet_txt_n = open('../data/noncrime_text.txt', 'wb')
+for j in (all_tweets - crime_tweets):
+    tweet_txt_n.write(tweet_dict[j] + '\n')

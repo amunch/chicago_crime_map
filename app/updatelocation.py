@@ -30,7 +30,7 @@ def further_classify(timestamp,coor,t_id,iscrime):
 
 def outputTweet(coor,timestamp):
     filename = sys.argv[1]
-    csvfile = open(filename, 'r+b')
+    csvfile = open(filename, 'r')
     csv_reader = csv.reader(csvfile)
     csvfile.seek(0)
     oklines = []
