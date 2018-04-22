@@ -29,7 +29,7 @@ def further_classify(timestamp,coor,t_id,iscrime):
 
 def outputTweet(coor,timestamp):
     filename = sys.argv[1]
-    csvfile = open(filename, 'w+b')
+    csvfile = open(filename, 'r+b')
     csv_reader = csv.reader(csvfile)
     csvfile.seek(0)
     for row in csv_reader:
@@ -37,11 +37,14 @@ def outputTweet(coor,timestamp):
         currenttime = datetime.now() - timedelta(hours=1) # time from hour ago
         if dt >= currenttime: # too old
             csvfile.write(row)
-    writer = csv.writer(csvfile)
-    writer.writerow([coor[0],coor[1],timestamp])
-    print("yoooo")
     csvfile.truncate()
     csvfile.close()
+    #
+    csvf = open(filename, 'wb')
+    writer = csv.writer(csvf)
+    writer.writerow([coor[0],coor[1],timestamp])
+    print("yoooo")
+    csvf.close()
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
