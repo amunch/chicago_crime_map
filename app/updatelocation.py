@@ -36,7 +36,7 @@ def outputTweet(coor,timestamp):
     oklines = []
     for row in csv_reader:
         dt = datetime.strptime(row[2], "%Y-%m-%d %H:%M:%S")
-        currenttime = datetime.now() - timedelta(minutes=1)#timedelta(hours=1) # time from hour ago
+        currenttime = datetime.now() - timedelta(hours=1) # time from hour ago
         #print(currenttime)
         if dt >= currenttime: # too old
             oklines.append(row)
