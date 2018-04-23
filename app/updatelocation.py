@@ -8,9 +8,9 @@ class listener(tweepy.StreamListener):
         text = status.text.encode('utf-8')
         timestamp = str(status.created_at)
         coor = status.geo
-        print(coor)
+        #print(coor)
         t_id = str(status.id)
-        print("hi")
+        #print("hi")
         if coor != None:
             classify(text,timestamp,coor['coordinates'],t_id)
         return True
@@ -35,20 +35,21 @@ def outputTweet(coor,timestamp):
     csvfile.seek(0)
     oklines = []
     for row in csv_reader:
-        dt = datetime.strptime(row[3], "%a %b %d %H:%M:%S +0000 %Y")
-        currenttime = datetime.now() - timedelta(hours=1) # time from hour ago
+        dt = datetime.strptime(row[2], "%Y-%m-%d %H:%M:%S")
+        currenttime = datetime.now() - timedelta(minutes=1)#timedelta(hours=1) # time from hour ago
+        #print(currenttime)
         if dt >= currenttime: # too old
             oklines.append(row)
-    csvfile.truncate()
+    #csvfile.truncate()
     csvfile.close()
     #
     csvf = open(filename, 'w')     
     writer = csv.writer(csvf)
-    print([coor[0], coor[1], timestamp])
+    #print([coor[0], coor[1], timestamp])
     for row in oklines:
-        writer.writerow([row])
+        writer.writerow([str(row[0]),str(row[1]),timestamp])
     writer.writerow([str(coor[0]),str(coor[1]),timestamp])
-    print("yoooo")
+    print("Updated")
     csvf.close()
 
 if __name__ == "__main__":
