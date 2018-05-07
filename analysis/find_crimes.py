@@ -53,7 +53,7 @@ with open('../data/chicago_geo.csv', 'rb') as csvfile:
         geo = (row[1], row[2])
         dt = datetime.strptime(row[3], "%a %b %d %H:%M:%S +0000 %Y")
         all_tweets.add(row[4])
-        tweet_dict[row[4]] = row[0]
+        tweet_dict[row[4]] = (row[0], tuple(geo))
         tweets.append([row[0], tuple(geo), dt, row[4]])
 
 with open('../data/crimes.csv', 'rb') as csvfile:
@@ -67,8 +67,12 @@ with open('../data/crimes.csv', 'rb') as csvfile:
             find_tweets(dt, row[16], tweets)
 
 tweet_txt = open('../data/crime_text.txt', 'wb')
+crime_geo = open('../data/crime_geo.txt', 'wb')
 for i in crime_tweets:
-    tweet_txt.write(tweet_dict[i] + '\n')
+    tweet_txt.write(tweet_dict[i][0].replace('\n', ' ') + '\n')
+    crime_geo.write(str(tweet_dict[i][1]) + '\n')
 tweet_txt_n = open('../data/noncrime_text.txt', 'wb')
+crime_geo_n = open('../data/noncrime_geo.txt', 'wb')
 for j in (all_tweets - crime_tweets):
-    tweet_txt_n.write(tweet_dict[j] + '\n')
+    tweet_txt_n.write(tweet_dict[j][0].replace('\n', ' ') + '\n')
+    crime_geo_n.write(str(tweet_dict[j][1]) + '\n')

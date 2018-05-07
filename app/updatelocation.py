@@ -3,14 +3,14 @@ import csv
 import tweepy
 from datetime import datetime,timedelta
 
+import text_classify
+
 class listener(tweepy.StreamListener):
     def on_status(self, status):
         text = status.text.encode('utf-8')
         timestamp = str(status.created_at)
         coor = status.geo
-        #print(coor)
         t_id = str(status.id)
-        #print("hi")
         if coor != None:
             classify(text,timestamp,coor['coordinates'],t_id)
         return True
@@ -20,13 +20,11 @@ class listener(tweepy.StreamListener):
 
 def classify(text,timestamp,coor,t_id):
     iscrime = 1
-    further_classify(timestamp,coor,t_id,iscrime)
-
-def further_classify(timestamp,coor,t_id,iscrime):
-    if iscrime:
-        outputTweet(coor,timestamp)
-    else:
-        return
+    print(text)
+    if text_classify.classify(text, tuple(coor)) == 1:
+        outputTweet(coor, timestamp)
+        print('Crime tweet.')
+    
 
 def outputTweet(coor,timestamp):
     filename = sys.argv[1]
@@ -47,7 +45,7 @@ def outputTweet(coor,timestamp):
     writer = csv.writer(csvf)
     #print([coor[0], coor[1], timestamp])
     for row in oklines:
-        writer.writerow([str(row[0]),str(row[1]),timestamp])
+        writer.writerow([str(row[0]),str(row[1]),row[2]])
     writer.writerow([str(coor[0]),str(coor[1]),timestamp])
     print("Updated")
     csvf.close()
@@ -66,4 +64,4 @@ if __name__ == "__main__":
     api = tweepy.API(auth)
     stream_listener = listener()
     stream = tweepy.Stream(auth=api.auth, listener=stream_listener)
-    stream.filter(locations=[-87.7219,41.7806,-87.6187,41.9130],async=True)
+    stream.filter(locations=[-87.7219,41.7806,-87.6187,41.9130],async=False)
